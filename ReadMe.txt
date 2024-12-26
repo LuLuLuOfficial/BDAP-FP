@@ -2,6 +2,8 @@
 	<销售净利率> = <  1.持续经营净利润（净亏损以“－”号填列）> / <一、营业总收入> * 100
 	pyinstaller --onefile --noconsole Main.py
 
+Python -> 3.11.9
+
 UpDate Log:
 	V.1.0:
 		None
