@@ -2,14 +2,16 @@ import pandas
 
 from Data.Lib.LucasClass.LucasLogManager import LogManager
 from Data.Lib.LucasFunc.LucasFunc import GetPlatform
+from Data.Lib.Windows.WinArgsPasser import WinArgsPasser
 
 class Imaging():
-    def __init__(self, Path: str, SheetName: str, LogManage: LogManager):
-        self.Basic_Config(Path=Path, SheetName=SheetName, LogManage=LogManage)
+    def __init__(self, Path: str, SheetName: str, LogManage: LogManager, WinArgsPass: WinArgsPasser):
+        self.Basic_Config(Path=Path, SheetName=SheetName, LogManage=LogManage, WinArgsPass=WinArgsPass)
 
-    def Basic_Config(self, Path: str, SheetName: str, LogManage: LogManager):
+    def Basic_Config(self, Path: str, SheetName: str, LogManage: LogManager, WinArgsPass: WinArgsPasser):
         self.Path_Excel: str = Path
         self.LogManage: LogManager = LogManage
+        self.WinArgsPass: WinArgsPasser = WinArgsPass
         self.DF = pandas.read_excel(self.Path_Excel, header=None, dtype=str, sheet_name=SheetName)
 
         self.Index_KeyYear: list[str] = self.DF.iloc[0, :].tolist()
@@ -29,6 +31,8 @@ class Imaging():
         Tittle: dict = Tittle
         List_Year = self.List_Year
         CalculateEnd = self.ComputedExpression(Expression=Expression)
+        if CalculateEnd == 'Error':
+            return
         Tittle['Tittle'] = CalculateEnd['Name']
         Values: int = [CalculateEnd[int(year)] for year in List_Year]
 
@@ -70,6 +74,8 @@ class Imaging():
             plt.title(Tittle['Tittle'])
             plt.show()
 
+        self.LogManage.LogOutput(Type='Imaging', LogMassage='图表绘制完成.')
+
     def ComputedExpression(self, Expression: str):
         Expression: str = Expression        # 表达式原式
 
@@ -100,8 +106,14 @@ class Imaging():
                 Argument = Expression[ArgumentLocation[0]: ArgumentLocation[1]]
                 ArgumentLocation = [-1, -1]
                 if EqualRight:
-                    Dict_Arguments[Argument] = self.DF.iloc[self.Index_KeyItem.index(Argument), :].tolist()
-                    Dict_Arguments_Keys.append(Argument)
+                    if Argument in self.Index_KeyItem:
+                        Dict_Arguments[Argument] = self.DF.iloc[self.Index_KeyItem.index(Argument), :].tolist()
+                        Dict_Arguments_Keys.append(Argument)
+                        self.LogManage.LogOutput(Type='Imaging', LogMassage=f'Dict_Arguments_Keys 创建成功.')
+                    else:
+                        self.WinArgsPass.Error = [True, '参数拼写错误', f'未在项目列表中找到目标参数 -> {Argument}']
+                        self.LogManage.LogOutput(Type='Imaging', LogMassage=f'参数拼写错误, 未在项目列表中找到目标参数 -> {Argument}.')
+                        return 'Error'
                 else:
                     EqualRight = True
                     Dict_Arguments['ExpressionName'] = Argument
