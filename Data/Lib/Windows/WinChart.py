@@ -119,7 +119,7 @@ class WinChart(QWidget):
             return
 
         if self.List_ComboBox[0].currentIndex():
-            self.Imaging: Imaging = Imaging(Path=self.ExcelPath, SheetName=self.List_ComboBox[0].currentText(), LogManage=self.LogManage)
+            self.Imaging: Imaging = Imaging(Path=self.ExcelPath, SheetName=self.List_ComboBox[0].currentText(), LogManage=self.LogManage, WinArgsPass=self.WinArgsPass)
         else:
             _WinError = WinError(self.LogManage, '\t数据缺失:\n      未选择目标数据表.')
             _WinError.exec()
@@ -147,6 +147,9 @@ class WinChart(QWidget):
             Tittle: dict = {'Tittle': None,'Tittle_X': Tittle_XY[0],'Tittle_Y': Tittle_XY[1]}
             self.Imaging.ToImage(Type=self.List_ComboBox[1].currentText(), Expression=self.List_TextBox[0].text(), Tittle=Tittle)
             self.WinArgsPass.Tittle_XY[2] = False
+            if self.WinArgsPass.Error[0]:
+                _WinError = WinError(self.LogManage, f'\t{self.WinArgsPass.Error[1]}:\n      {self.WinArgsPass.Error[2]}')
+                _WinError.exec()
     
     def KeyBoard(self, ButtonID: str):
         _ = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
