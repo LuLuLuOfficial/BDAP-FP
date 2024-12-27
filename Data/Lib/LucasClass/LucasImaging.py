@@ -111,8 +111,8 @@ class Imaging():
                         Dict_Arguments_Keys.append(Argument)
                         self.LogManage.LogOutput(Type='Imaging', LogMassage=f'Dict_Arguments_Keys 创建成功.')
                     else:
-                        self.WinArgsPass.Error = [True, '参数拼写错误', f'未在项目列表中找到目标参数 -> {Argument}']
-                        self.LogManage.LogOutput(Type='Imaging', LogMassage=f'参数拼写错误, 未在项目列表中找到目标参数 -> {Argument}.')
+                        self.WinArgsPass.Error = [True, '参数拼写错误', fr'未在项目列表中找到目标参数 -> <{Argument}>']
+                        self.LogManage.LogOutput(Type='Imaging', LogMassage=fr'参数拼写错误, 未在项目列表中找到目标参数 -> <{Argument}>.')
                         return 'Error'
                 else:
                     EqualRight = True
